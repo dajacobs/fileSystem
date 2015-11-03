@@ -1,5 +1,6 @@
 package fileSys;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -44,6 +45,25 @@ public class Disk {
         try {
             seek(blockNum);
             disk.read(buffer);
+        } catch(IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+        readCount++;
+    }
+    // Reads super into byte buffer
+    public void read(int blockNum, SuperBlock block) {
+        try {
+            seek(blockNum);
+            block.size = disk.readInt();
+            block.iSize = disk.readInt();
+            block.freeList = disk.readInt();
+        } catch(EOFException e) {
+            if(blockNum != 0) {
+                System.err.println(e);
+                System.exit(1);
+            }
+            block.size = block.iSize = block.freeList = 0;
         } catch(IOException e) {
             System.err.println(e);
             System.exit(1);
