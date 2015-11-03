@@ -13,8 +13,8 @@ public class InodeBlock {
     @Override
     public String toString() {
         String s = "INODEBLOCK:\n";
-        for(int i = 0; i < node.length; i++) {
-            s += node[i] + "\n";
+        for (Inode node1 : node) {
+            s += node1 + "\n";
         }
         return s;
     }
