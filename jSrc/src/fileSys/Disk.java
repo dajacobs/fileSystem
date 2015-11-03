@@ -115,13 +115,32 @@ public class Disk {
         }
         writeCount++;
     }
-    // Writer from super to block number
+    // Write from super to block number
     public void write(int blockNum, SuperBlock block) {
         try {
             seek(blockNum);
             disk.writeInt(block.size);
             disk.writeInt(block.iSize);
             disk.writeInt(block.freeList);
+        } catch(IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+        writeCount++;
+    }
+    // Write from inode to block number
+    public void write(int blockNum, InodeBlock block) {
+        try {
+            seek(blockNum);
+            for(int i = 0; i < block.node.length; i++) {
+                disk.writeInt(block.node[i].flags);
+                //disk.writeInt(block.node[i].owner);
+                //disk.writeInt(block.node[i].size);
+                disk.writeInt(block.node[i].fileSize);
+                for(int j = 0; j < 13; j++) {
+                    disk.writeInt(block.node[i].pointer[j]);
+                }
+            }
         } catch(IOException e) {
             System.err.println(e);
             System.exit(1);
