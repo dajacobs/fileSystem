@@ -29,4 +29,11 @@ public class Disk {
             System.exit(1);
         }
     }
+    // Sets the pointer to the block number
+    private void seek(int blockNum) throws IOException {
+        if(blockNum < 0 || blockNum >= NUM_BLOCKS) {
+            throw new RuntimeException("Attempt to read block " +blockNum+ " is out of range");
+        }
+        disk.seek((long)(blockNum * BLOCK_SIZE));
+    }
 }
