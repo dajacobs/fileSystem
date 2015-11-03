@@ -115,4 +115,17 @@ public class Disk {
         }
         writeCount++;
     }
+    // Writer from super to block number
+    public void write(int blockNum, SuperBlock block) {
+        try {
+            seek(blockNum);
+            disk.writeInt(block.size);
+            disk.writeInt(block.iSize);
+            disk.writeInt(block.freeList);
+        } catch(IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+        writeCount++;
+    }
 }
