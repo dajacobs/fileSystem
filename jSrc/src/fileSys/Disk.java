@@ -70,4 +70,22 @@ public class Disk {
         }
         readCount++;
     }
+    // Reads inode block into byte buffer
+    public void read(int blockNum, InodeBlock block) {
+        try {
+            seek(blockNum);
+            for(int i = 0; i < block.node.length; i++) {
+                block.node[i].flags = disk.readInt();
+                block.node[i].owner = disk.readInt();
+                block.node[i].fileSize = disk.readInt();
+                for(int j = 0; j < 13; j++) {
+                    block.node[i].pointer[j] = disk.readInt();
+                }
+            }
+        } catch(IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+        readCount++;
+    }
 }
