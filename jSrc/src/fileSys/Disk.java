@@ -147,4 +147,17 @@ public class Disk {
         }
         writeCount++;
     }
+    // Write from indirect to block number
+    public void write(int blockNum, IndirectBlock block) {
+        try {
+            seek(blockNum);
+            for(int i = 0; i < block.pointer.length; i++) {
+                disk.writeInt(block.pointer[i]);
+            }
+        } catch(IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+        writeCount++;
+    }
 }
