@@ -160,4 +160,19 @@ public class Disk {
         }
         writeCount++;
     }
+    // Delete file name
+    public void stop(boolean removeFile) {
+        System.out.println(stats());
+        if(removeFile) {
+            fileName.delete();
+        }
+    }
+    // Stop method with true value
+    public void stop() {
+        stop(true);
+    }
+    // To string method to print variables
+    public String stats() {
+        return "DISK: Read count: " +readCount +" Write count: " +writeCount;
+    }
 }
