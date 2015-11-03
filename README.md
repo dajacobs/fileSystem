@@ -7,5 +7,4 @@ File system architecture.
 - IndirectBlock
 - Inode
 - InodeBlock
-- JavaFileSystem
 - SuperBlock
