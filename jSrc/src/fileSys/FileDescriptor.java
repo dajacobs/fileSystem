@@ -2,9 +2,9 @@ package fileSys;
 
 public class FileDescriptor {
     // Inode for file
-    private Inode inode;
+    private final Inode inode;
     // Number of inodes
-    private int iNumb;
+    private final int iNumb;
     // Seek pointer for files
     private int sPtr;
     
