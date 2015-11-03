@@ -12,7 +12,7 @@ public class Disk {
     // Number of pointers in a disk block
     public final static int POINTERS_PER_BLOCK = (BLOCK_SIZE/4);
     // Number of reads to file system
-    private final int readCount = 0;
+    private int readCount = 0;
     // Number of writes to file system
     private final int writeCount = 0;
     // File representing the disk
@@ -35,5 +35,19 @@ public class Disk {
             throw new RuntimeException("Attempt to read block " +blockNum+ " is out of range");
         }
         disk.seek((long)(blockNum * BLOCK_SIZE));
+    }
+    // Reads blockNum into byte buffer
+    public void read(int blockNum, byte[] buffer) {
+        if(buffer.length != BLOCK_SIZE) {
+            throw new RuntimeException("Read: bad buffer size " +buffer.length);
+        }
+        try {
+            seek(blockNum);
+            disk.read(buffer);
+        } catch(IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+        readCount++;
     }
 }
