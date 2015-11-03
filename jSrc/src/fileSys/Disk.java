@@ -15,7 +15,7 @@ public class Disk {
     // Number of reads to file system
     private int readCount = 0;
     // Number of writes to file system
-    private final int writeCount = 0;
+    private int writeCount = 0;
     // File representing the disk
     private File fileName;
     // RAF representing the disk
@@ -100,5 +100,19 @@ public class Disk {
             System.exit(1);
         }
         readCount++;
+    }
+    // Write from buffer to block number
+    public void writer(int blockNum, byte[] buffer) {
+        if(buffer.length != BLOCK_SIZE) {
+            throw new RuntimeException("Writer: bad buffer size " +buffer.length);    
+        }
+        try {
+            seek(blockNum);
+            disk.write(buffer);
+        } catch(IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+        writeCount++;
     }
 }
