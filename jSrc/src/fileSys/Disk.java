@@ -88,4 +88,17 @@ public class Disk {
         }
         readCount++;
     }
+    // Reads indirect block into byte buffer
+    public void read(int blockNum, IndirectBlock block) {
+        try {
+            seek(blockNum);
+            for(int i = 0; i < block.pointer.length; i++) {
+                block.pointer[i] = disk.readInt();
+            }
+        } catch(IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+        readCount++;
+    }
 }
