@@ -2,13 +2,13 @@ package fileSys;
 
 public class JavaFileSystem {
     // Disk declaration
-    private final Disk disk;
+    private Disk disk;
     // Super block declaration
-    private final SuperBlock superBlock;
+    private SuperBlock superBlock;
     // List cache
-    private final IndirectBlock freeList;
+    private IndirectBlock freeList;
     // File table declaration
-    private final FileTable fileTable;
+    private FileTable fileTable;
     
     // Instantiate java file system
     public JavaFileSystem() {
@@ -54,5 +54,14 @@ public class JavaFileSystem {
                 }
             }
         }
+        // Initialize super block
+        superBlock.size = size;
+        superBlock.iSize = iSize;
+        superBlock.freeList = iSize + 1;
+        // Write the block to the disk
+        disk.write(0, superBlock);
+        // Cache the first block
+        freeList = b;
+        return 0;
     }
 }
