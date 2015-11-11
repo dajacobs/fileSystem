@@ -75,4 +75,20 @@ public class JavaFileSystem {
         // Update inode
         return writeInode(iNum, inode);
     }
+    // Write inode 
+    private int writeInode(int iNum, Inode inode) {
+        if(iNum <= 0) {
+            return -1;
+        }
+        int block = (iNum - 1)/8 + 1;
+        if((block < 1) || (block > superBlock.iSize)) {
+            return -1;
+        }
+        // Read and write the inode block
+        InodeBlock ib = new InodeBlock();
+        disk.read(block, ib);
+        ib.node[(iNum - 1)%8] = inode;
+        disk.write(block, ib);
+        return 0;
+    }
 }
