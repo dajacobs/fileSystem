@@ -64,6 +64,29 @@ public class JavaFileSystem {
         freeList = b;
         return 0;
     }
+    // Create
+    public int create() {
+        // Allocate a file descriptor
+        int fd = fileTable.allocate();
+        if(fd < 0) {
+            return -1;
+        }
+        // Free-up file table descriptor
+        fileTable.free(fd);
+        // Set-up new inode;
+        Inode inode = new Inode();
+        inode.flags = 1;
+        inode.owner = 0;
+        inode.fileSize = 0;
+        for(int i = 0; i < inode.pointer.length; i++) {
+            inode.pointer[i] = 0;
+        }
+        int ind = fileTable.getInumb(fd);
+        if(ind < 0) {
+            return -1;
+        }
+        return open(ind, inode);
+    }
     // Close 
     public int close(int fd) {
         // Get file table number
