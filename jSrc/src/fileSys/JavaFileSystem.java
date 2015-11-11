@@ -140,7 +140,7 @@ public class JavaFileSystem {
                 }
             }
         }
- {        // Too many files in disk
+        // Too many files in disk
         return -1;
     }
     // Open
