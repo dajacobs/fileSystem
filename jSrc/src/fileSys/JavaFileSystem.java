@@ -98,6 +98,17 @@ public class JavaFileSystem {
         // Update inode
         return writeInode(iNum, inode);
     }
+    // Shutdown
+    public int shutdown() {
+        for(int i = 0; i < FileTable.MAX_FILES; i++) {
+            close(i);
+        }
+        if((freeList != null) && (superBlock.freeList > 0)) {
+            disk.write(superBlock.freeList, freeList);
+        }
+        disk.write(superBlock.freeList, superBlock);
+        return 0;
+    }
     // Write inode 
     private int writeInode(int iNum, Inode inode) {
         if(iNum <= 0) {
@@ -129,7 +140,7 @@ public class JavaFileSystem {
                 }
             }
         }
-        // Too many files in disk
+ {        // Too many files in disk
         return -1;
     }
     // Open
