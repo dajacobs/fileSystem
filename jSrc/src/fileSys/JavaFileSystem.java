@@ -91,4 +91,22 @@ public class JavaFileSystem {
         disk.write(block, ib);
         return 0;
     }
+    // Find and allocate the first free inode
+    private int allocInode(Inode inode) {
+        InodeBlock ib = new InodeBlock();
+        // Traverse inode of the disk
+        for(int i = 1; i <= superBlock.iSize; i++) {
+            disk.read(i, ib);
+            // Traverse through inode block
+            for(int j = 0; j < ib.node.length; j++) {
+                if(ib.node[j].flags == 0) {
+                    ib.node[j] = inode;
+                    disk.write(i, ib);
+                    return (i - 1)*8 + j + 1;
+                }
+            }
+        }
+        // Too many files in disk
+        return -1;
+    }
 }
