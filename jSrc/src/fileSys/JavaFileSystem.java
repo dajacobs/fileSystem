@@ -64,4 +64,15 @@ public class JavaFileSystem {
         freeList = b;
         return 0;
     }
+    // Close 
+    public int close(int fd) {
+        // Get file table number
+        int iNum = fileTable.getInumb(fd);
+        // Get file table inode
+        Inode inode = fileTable.getInode(fd);
+        // Free-up file descriptor
+        fileTable.free(fd);
+        // Update inode
+        return writeInode(iNum, inode);
+    }
 }
