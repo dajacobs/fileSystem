@@ -109,4 +109,26 @@ public class JavaFileSystem {
         // Too many files in disk
         return -1;
     }
+    // Open
+    private int open(int iNum, Inode inode) {
+        if(inode.flags == 0) {
+            // Not found
+            return -1;
+        } else if(fileTable.getFDInumb(iNum) >= 0) {
+            // Already open
+            return -1;
+        }
+        // Allocate a file descriptor
+        int fd = fileTable.allocate();
+        if((fd < 0) || (fd >= FileTable.MAX_FILES)) {
+            return -1;
+        }
+        int status = fileTable.add(inode, iNum, fd);
+        if(status < 0) {
+            // Error
+            fileTable.free(fd);
+            return -1;
+        }
+        return fd;
+    }
 }
