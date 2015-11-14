@@ -81,7 +81,7 @@ public class JavaFileSystem {
         for(int i = 0; i < inode.pointer.length; i++) {
             inode.pointer[i] = 0;
         }
-        int ind = fileTable.getInumb(fd);
+        int ind = allocInode(inode);
         if(ind < 0) {
             return -1;
         }
