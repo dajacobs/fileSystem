@@ -1,7 +1,9 @@
 package fileSys;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.NoSuchElementException;
 
 public class Test {
     // Java file system object
@@ -11,7 +13,21 @@ public class Test {
         fs = new JavaFileSystem();
         // Buffered reader initialize
         BufferedReader data = new BufferedReader(new InputStreamReader(System.in));
-        
+        // Read input
+        for(;;) {
+            try {
+                System.out.print("--> ");
+                System.out.flush();
+                String line = data.readLine();
+                line = line.trim();
+                if(line.length() == 0) {
+                    System.out.println();
+                    continue;
+                }
+            } catch(NumberFormatException | NoSuchElementException | IOException e) {
+                
+            }
+        }
     }
     // Help list
     private static void help() {
