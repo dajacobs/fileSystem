@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 public class Test {
     // Java file system object
@@ -23,6 +24,26 @@ public class Test {
                 if(line.length() == 0) {
                     System.out.println();
                     continue;
+                }
+                StringTokenizer cmds = new StringTokenizer(line);
+                String cmd = cmds.nextToken();
+                int result = 0;
+                if(cmd.equalsIgnoreCase("format")) { 
+                    int arg1 = Integer.parseInt(cmds.nextToken());
+                    int arg2 = Integer.parseInt(cmds.nextToken());
+                    result = fs.formatDisk(arg1, arg2);
+                } else if(cmd.equalsIgnoreCase("shutdown")) {
+                    result = fs.shutdown();
+                } else if(cmd.equalsIgnoreCase("create")) {
+                    result = fs.create();
+                } else if(cmd.equalsIgnoreCase("close")) {
+                    result = fs.close(Integer.parseInt(cmds.nextToken()));
+                } else if(cmd.equalsIgnoreCase("quit")) {
+                    System.exit(0);
+                } else if(cmd.equalsIgnoreCase("help")) {
+                    help();
+                } else {
+                    System.out.println("Command Unknown");
                 }
             } catch(NumberFormatException | NoSuchElementException | IOException e) {
                 
