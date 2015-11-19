@@ -182,6 +182,16 @@ public class JavaFileSystem {
             }
         return freeBlock;
     }
+    // Add inode block with block
+    private int addBlock(Inode inode, int block, int where) {
+        final int N = Disk.BLOCK_SIZE/4;
+        int level, p, i0, i1 = 0, i2 = 0, i3 = 0;
+        // Single 
+        if(where <= 9) {
+            level = 0;
+            i0 = p = where;
+        }
+    }
     // Read inode
     private Inode readInode(int inum) {
         if(inum <= 0) {
