@@ -211,4 +211,8 @@ public class JavaFileSystem {
         }
         return 0;
     }
+    // Get block number
+    private int getBlock(Inode inode, int block) {
+        int size = (inode.fileSize + Disk.BLOCK_SIZE - 1)/Disk.BLOCK_SIZE;
+    }
 }
