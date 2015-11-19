@@ -165,4 +165,11 @@ public class JavaFileSystem {
         }
         return fd;
     }
+    // Free-up block
+    private int freeBlock(int block) {
+        // Check input
+        if(block <= 0) {
+            return -1;
+        }
+    }
 }
