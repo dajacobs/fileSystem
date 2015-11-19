@@ -143,6 +143,20 @@ public class JavaFileSystem {
         // Too many files in disk
         return -1;
     }
+    // Read inode
+    private Inode readInode(int inum) {
+        if(inum <= 0) {
+            return null;
+        }
+        // Get inum block
+        int block = (inum - 1)/8 + 1;
+        if((block < 1) || (block > superBlock.iSize)) {
+            return null;
+        }
+        InodeBlock ib = new InodeBlock();
+        disk.read(block, ib);
+        return ib.node[(inum - 1)%8];
+    }
     // Open
     private int open(int iNum, Inode inode) {
         if(inode.flags == 0) {
