@@ -243,6 +243,37 @@ public class JavaFileSystem {
             i1 = p / (N * N);
             i2 = (p/N) % N;
             i3 = p % N;
+        } else {
+            return -1;
         }
+        if(level == 0) {
+            return inode.pointer[i0];
+        }
+        IndirectBlock ib = new IndirectBlock();
+        int disk_i1 = inode.pointer[i0];
+        if(disk_i1 <= 0) {
+            return -1;
+        } else {
+            disk.read(disk_i1, ib);
+        }
+        if(level == 1) { 
+            return ib.pointer[i1]; 
+        }
+	int disk_i2 = ib.pointer[i1];
+	if(disk_i2 <= 0) { 
+            return -1; 
+        } else { 
+            disk.read(disk_i2, ib); 
+        }
+	if(level == 2) { 
+            return ib.pointer[i2]; 
+        }
+	int disk_i3 = ib.pointer[i2];
+	if(disk_i3 <= 0) { 
+            return -1; 
+        } else { 
+            disk.read(disk_i3, ib); 
+        }
+	return ib.pointer[i3];
     }
 }
