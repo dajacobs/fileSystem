@@ -246,6 +246,7 @@ public class JavaFileSystem {
         }
         boolean toBeAllocated = allocated > 0;
         int disk_i2 = (toBeAllocated) ? (allocatedBlocks[--allocated]) : (ib.pointer[i1]);
+        // Empty
         if(toBeAllocated || (disk_i2 <= 0)) {
             if(disk_i2 <= 0) {
                 if(allocated > 0) {
@@ -273,6 +274,14 @@ public class JavaFileSystem {
                 disk.write(disk_i1, ib);
                 ib.clear();
             }
+        } else { 
+            disk.read(disk_i2, ib); 
+        }
+        // Second level
+        if(level == 2) {
+            ib.pointer[i2] = block;
+            disk.write(disk_i2, ib);
+            return 0;
         }
     }
     // Read inode
