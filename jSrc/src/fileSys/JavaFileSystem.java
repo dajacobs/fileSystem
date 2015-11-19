@@ -143,6 +143,22 @@ public class JavaFileSystem {
         // Too many files in disk
         return -1;
     }
+    // Allocate block
+    private int allocateBlock(int fd, int where) {
+        if(superBlock.freeList <= 0) {
+            return -1;
+        }
+        int block = allocateBlock();
+        if(block < 0) {
+            return -1;
+        }
+        Inode I = fileTable.getInode(fd);
+        if(addBlock(I, block, where) < 0) {
+            freeBlock(block);
+            return -1;
+        }
+        return block;
+    }
     // Read inode
     private Inode readInode(int inum) {
         if(inum <= 0) {
