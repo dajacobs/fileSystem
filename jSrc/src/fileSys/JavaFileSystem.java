@@ -295,6 +295,24 @@ public class JavaFileSystem {
                     return -1;
                 }
                 int b = allocateBlock();
+                if(b <= 0) {
+                    freeBlock(b);
+                    return -1;
+                }
+                disk_i3 = ib.pointer[i2] = b;
+                disk.write(disk_i2, ib);
+                ib.clear();
+            } else {
+                ib.pointer[i2] = disk_i3;
+                disk.write(disk_i2, ib);
+                ib.clear();
+            }
+        } else { 
+            disk.read(disk_i3, ib); 
+        }
+        ib.pointer[i3] = block;
+        disk.write(disk_i3, ib);
+        return 0;
     }
     // Read inode
     private Inode readInode(int inum) {
