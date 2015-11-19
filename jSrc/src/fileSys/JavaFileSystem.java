@@ -196,6 +196,13 @@ public class JavaFileSystem {
             p = where - 10;
             i0 = 10;
             i1 = p;
+        // Double block    
+        } else if(where <= (9 + N + N * N)) {
+            level = 2;
+            p = where - (10 + N);
+            i0 = 11;
+            i1 = p / N;
+            i2 = p % N;
         }
     }
     // Read inode
