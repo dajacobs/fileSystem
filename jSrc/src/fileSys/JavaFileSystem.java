@@ -214,5 +214,20 @@ public class JavaFileSystem {
     // Get block number
     private int getBlock(Inode inode, int block) {
         int size = (inode.fileSize + Disk.BLOCK_SIZE - 1)/Disk.BLOCK_SIZE;
+        if(block < 0) {
+            return -1;
+        }
+        final int N = 128;
+        int level, p, i0, i1 = 0, i2 = 0, i3 = 0;
+        if(block <= 9) {
+            level = 0;
+            i0 = p = block;
+        // Single indirect block 
+        } else if(block <= (9 + N)) {
+            level = 1;
+            p = block - 10;
+            i0 = 10;
+            i1 = p;
+        }
     }
 }
