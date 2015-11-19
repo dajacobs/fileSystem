@@ -228,6 +228,13 @@ public class JavaFileSystem {
             p = block - 10;
             i0 = 10;
             i1 = p;
+        // Double indirect block    
+        } else if(block <= (9 + N + N * N)) {
+            level = 2;
+            p = block - (10 + N);
+            i0 = 11;
+            i1 = p / N;
+            i2 = p % N;
         }
     }
 }
