@@ -203,6 +203,14 @@ public class JavaFileSystem {
             i0 = 11;
             i1 = p / N;
             i2 = p % N;
+        // Triple block    
+        } else if(where <= (9 + N + N * N + N * N * N)) {
+            level = 3;
+            p = where - (10 + N + N * N);
+            i0 = 12;
+            i1 = p / (N * N);
+            i2 = (p / N) % N;
+            i3 = p % N;
         }
     }
     // Read inode
