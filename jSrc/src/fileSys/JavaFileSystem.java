@@ -143,7 +143,7 @@ public class JavaFileSystem {
         // Too many files in disk
         return -1;
     }
-    // Allocate block
+    // Allocate block with file descriptor
     private int allocateBlock(int fd, int where) {
         if(superBlock.freeList <= 0) {
             return -1;
@@ -158,6 +158,29 @@ public class JavaFileSystem {
             return -1;
         }
         return block;
+    }
+    // Allocate block
+    private int allocateBlock() {
+        if(superBlock.freeList <= 0) {
+            return -1;
+        }
+        if(freeList == null) {
+            freeList = new IndirectBlock();
+            disk.read(superBlock.freeList, freeList);
+        }
+        int offset;
+        for(offset = 1; (offset < Disk.BLOCK_SIZE/4 - 1) && (freeList.pointer[offset] <= 0); offset++) {
+          
+        }
+        int freeBlock = freeList.pointer[offset];
+            freeList.pointer[offset] = 0;
+            if(freeBlock == 0) {
+                freeBlock = superBlock.freeList;
+                superBlock.freeList = freeList.pointer[0];
+                offset = 0;
+                freeList = null;
+            }
+        return freeBlock;
     }
     // Read inode
     private Inode readInode(int inum) {
