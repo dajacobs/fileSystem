@@ -171,5 +171,30 @@ public class JavaFileSystem {
         if(block <= 0) {
             return -1;
         }
+        if(superBlock.freeList <= 0) {
+            superBlock.freeList = block;
+            freeList = new IndirectBlock();
+            freeList.clear();
+            return 0;
+        }
+        // Fill cache if empty
+        if(freeList == null) {
+            freeList = new IndirectBlock();
+            disk.read(superBlock.freeList, freeList);
+        }
+        // Find last element, set offset if full
+        int offset;
+        for(offset = Disk.BLOCK_SIZE/4 - 1; (offset > 0) && (freeList.pointer[offset] > 0); offset--) {
+            if(offset <= 0) {
+                // Write in-memory free block to disk
+                disk.write(superBlock.freeList, freeList);
+                freeList = new IndirectBlock();
+		freeList.clear();
+		freeList.pointer[0] = superBlock.freeList;
+            } else {
+                freeList.pointer[offset] = block;
+            }
+        }
+        return 0;
     }
 }
