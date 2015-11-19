@@ -211,6 +211,31 @@ public class JavaFileSystem {
             i1 = p / (N * N);
             i2 = (p / N) % N;
             i3 = p % N;
+        } else {
+            return -1;
+        }
+        if(level == 0) {
+            inode.pointer[i0] = block;
+            return 0;
+        }
+        int allocated = 0;
+        int[] allocatedBlocks = new int[3];
+        IndirectBlock ib = new IndirectBlock();
+        int disk_i1 = inode.pointer[i0];
+        if(disk_i1 <= 0) {
+            for(int i = 0; i < level; i++) {
+                int b = allocateBlock();
+                if(b <= 0) {
+                    for(int j = 0; j < i; j++) { 
+                        freeBlock(allocatedBlocks[j]); 
+                    }
+                    return -1;
+                }
+                allocatedBlocks[i] = b;
+                allocated++;
+            }
+            disk_i1 = inode.pointer[i0] = allocatedBlocks[--allocated];
+            ib.clear();
         }
     }
     // Read inode
