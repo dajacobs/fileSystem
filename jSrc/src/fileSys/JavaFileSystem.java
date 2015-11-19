@@ -186,10 +186,16 @@ public class JavaFileSystem {
     private int addBlock(Inode inode, int block, int where) {
         final int N = Disk.BLOCK_SIZE/4;
         int level, p, i0, i1 = 0, i2 = 0, i3 = 0;
-        // Single 
+        // Empty block
         if(where <= 9) {
             level = 0;
             i0 = p = where;
+        // Single block    
+        } else if(where <= (9 + N)) {
+            level = 1;
+            p = where - 10;
+            i0 = 10;
+            i1 = p;
         }
     }
     // Read inode
