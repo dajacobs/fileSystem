@@ -236,6 +236,24 @@ public class JavaFileSystem {
             }
             disk_i1 = inode.pointer[i0] = allocatedBlocks[--allocated];
             ib.clear();
+        } else {
+            disk.read(disk_i1, ib);
+        }
+        if(level == 1) {
+            ib.pointer[i1] = block;
+            disk.write(disk_i1, ib);
+            return 0;
+        }
+        boolean toBeAllocated = allocated > 0;
+        int disk_i2 = (toBeAllocated) ? (allocatedBlocks[--allocated]) : (ib.pointer[i1]);
+        if(toBeAllocated || (disk_i2 <= 0)) {
+            if(disk_i2 <= 0) {
+                if(allocated > 0) {
+                    for(int j = 0; j < allocated; j++) { 
+                        freeBlock(allocatedBlocks[j]); 
+                    }
+                    return -1;
+                }
         }
     }
     // Read inode
