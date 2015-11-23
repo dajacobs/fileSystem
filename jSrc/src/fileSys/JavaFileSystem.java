@@ -156,6 +156,19 @@ public class JavaFileSystem {
             } else if(justAllocated) {
                 needToRead = false;
             }
+            // Prepare to write
+            byte writeBytes[] = new byte[Disk.BLOCK_SIZE];
+            if(justAllocated) {
+                for(int i = 0; i < Disk.BLOCK_SIZE; i++) {
+                    writeBytes[i] = 0;
+                }
+            }
+            if(needToRead) {
+                disk.read(disk_block, writeBytes);
+            }
+            for(int i = offset; i < (offset + writeSize); i++) {
+                writeBytes[i] = buffer[bp++];
+            }
         }
         return bp;
     }
