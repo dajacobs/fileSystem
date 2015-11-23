@@ -109,6 +109,21 @@ public class JavaFileSystem {
         disk.write(superBlock.freeList, superBlock);
         return 0;
     }
+    // Write to file
+    public int write(int fd, byte buffer[]) {
+        if(buffer.length <= 0) { 
+            return 0; 
+        }
+        // Get the pointer value
+        int sp = fileTable.getSptr(fd);
+        // Get the inode
+        Inode I = fileTable.getInode(fd);
+        // Get start point to write
+        int block  = sp / Disk.BLOCK_SIZE;
+        int offset = sp % 512;
+        int bp = 0;
+        return bp;
+    }
     // Write inode 
     private int writeInode(int iNum, Inode inode) {
         if(iNum <= 0) {
@@ -169,10 +184,9 @@ public class JavaFileSystem {
             disk.read(superBlock.freeList, freeList);
         }
         int offset;
+        int freeBlock = 0;
         for(offset = 1; (offset < Disk.BLOCK_SIZE/4 - 1) && (freeList.pointer[offset] <= 0); offset++) {
-          
-        }
-        int freeBlock = freeList.pointer[offset];
+            freeBlock = freeList.pointer[offset];
             freeList.pointer[offset] = 0;
             if(freeBlock == 0) {
                 freeBlock = superBlock.freeList;
@@ -180,6 +194,7 @@ public class JavaFileSystem {
                 offset = 0;
                 freeList = null;
             }
+        }
         return freeBlock;
     }
     // Add inode block with block
