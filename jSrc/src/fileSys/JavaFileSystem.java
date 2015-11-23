@@ -122,6 +122,16 @@ public class JavaFileSystem {
         int block  = sp / Disk.BLOCK_SIZE;
         int offset = sp % 512;
         int bp = 0;
+        while(bp < buffer.length) {
+            // Get block number and allocate
+            int disk_block = getBlock(I, block);
+            boolean justAllocated = false;
+            if(disk_block == 0) {
+                disk_block = allocateBlock(fd, block);
+                justAllocated = true;
+                if(disk_block < 0) { return bp; }
+            }
+        }
         return bp;
     }
     // Write inode 
