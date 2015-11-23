@@ -169,6 +169,18 @@ public class JavaFileSystem {
             for(int i = offset; i < (offset + writeSize); i++) {
                 writeBytes[i] = buffer[bp++];
             }
+            disk.writer(disk_block, writeBytes);
+            offset += writeSize;
+            if(offset >= Disk.BLOCK_SIZE) {
+                offset = 0;
+                block++;
+            }
+            sp += writeSize;
+            fileTable.setSptr(fd, sp);
+            // Update the size
+            if(writingBeyondEOF) { 
+                I.fileSize = block * Disk.BLOCK_SIZE + offset; 
+            }
         }
         return bp;
     }
