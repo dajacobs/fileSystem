@@ -129,7 +129,32 @@ public class JavaFileSystem {
             if(disk_block == 0) {
                 disk_block = allocateBlock(fd, block);
                 justAllocated = true;
-                if(disk_block < 0) { return bp; }
+                if(disk_block < 0) { 
+                    return bp; 
+                }
+            }
+            // If errors with block number
+            if(disk_block <= 0) { 
+                return -1; 
+            }
+            // Number of bytes to write
+            int writeSize = buffer.length - bp;
+            if((offset + writeSize) > 512) { 
+                writeSize = 512 - offset; 
+            }
+            // If writing beyond end of file
+            boolean writingBeyondEOF = writeSize + sp > I.fileSize;
+            // If needed to read before write to file
+            boolean needToRead = true;
+            // Write whole block
+            if((offset == 0) && (writeSize >= 512)) {
+                needToRead = false;
+            // Write at the end of file with offset value
+            } else if((offset == 0) && (writingBeyondEOF)) {
+                needToRead = false;
+            // Block just allocated    
+            } else if(justAllocated) {
+                needToRead = false;
             }
         }
         return bp;
