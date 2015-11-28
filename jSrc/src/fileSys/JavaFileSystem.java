@@ -98,6 +98,20 @@ public class JavaFileSystem {
         }
         return open(ind, inode);
     }
+    // Read
+    public int read(int fd, byte buffer[]) {
+        int sp = fileTable.getSptr(fd);
+        // Empty buffers ignored
+	if(buffer.length <= 0) {
+            return 0;
+        }
+        Inode I = fileTable.getInode(fd);
+        // Starting point to read
+        int block  = sp / 512;
+        int offset = sp % Disk.BLOCK_SIZE;
+        int bp = 0;
+        byte readBytes[] = new byte[Disk.BLOCK_SIZE];
+    }
     // Write to file
     public int write(int fd, byte buffer[]) {
         if(buffer.length <= 0) { 
