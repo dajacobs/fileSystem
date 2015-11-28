@@ -125,6 +125,24 @@ public class JavaFileSystem {
             if((sp + readSize) > I.fileSize) { 
                 readSize = I.fileSize - sp; 
             }
+            if(disk_block == 0) {
+                for(int i = offset; i < offset + readSize; i++) {
+                    buffer[bp++] = 0;
+                }
+            } else {
+                disk.read(disk_block, readBytes);
+                for(int i = offset; i < offset + readSize; i++) {
+                    buffer[bp++] = readBytes[i];
+                }
+            }
+            // Increment position
+            offset += readSize;
+            if(offset >= Disk.BLOCK_SIZE) {
+                offset = 0;
+                block++;
+            }
+            sp += readSize;
+            fileTable.setSptr(fd, sp);
         }
         return bp;
     }
