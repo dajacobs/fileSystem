@@ -555,6 +555,33 @@ public class JavaFileSystem {
         }
         return 0;
     }
+    // Free-up indirect block
+    private int freeIndirect(int block, int level) {
+        if(block == 0) {
+            return  0;
+        } else if(block <  0) {
+            return -1;
+        } else if(level <  0) {
+            return -1;
+        } else if(level == 0) { 
+            return freeBlock(block) < 0 ? -1 : 1; 
+        }
+        // Free-up the list of blocks
+        int count = 0;
+        IndirectBlock ib = new IndirectBlock();
+        disk.read(block, ib);
+        for(int i = 0; i < Disk.BLOCK_SIZE / 4; i++) {
+            if(ib.pointer[i] <= 0) {
+                continue;
+            }
+            int r = freeIndirect(ib.pointer[i], level - 1);
+            if(r > 0) { 
+                count += r; 
+            }
+        }
+        freeBlock(block);
+        return count;
+    }
     // Get block number
     private int getBlock(Inode inode, int block) {
         int size = (inode.fileSize + Disk.BLOCK_SIZE - 1)/Disk.BLOCK_SIZE;
