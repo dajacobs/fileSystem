@@ -253,6 +253,35 @@ public class JavaFileSystem {
         // Update inode
         return writeInode(iNum, inode);
     }
+    // Delete
+    public int delete(int iNumber) {
+        // Error
+        if(fileTable.getFDInumb(iNumber) >= 0) { 
+            return -1; 
+        }
+        Inode I = readInode(iNumber);
+        // Inode error
+        if(I == null) { 
+            return -1; 
+        }
+        // File not found
+        if(I.flags == 0) { 
+            return -1; 
+        }
+        int size = (I.fileSize + Disk.BLOCK_SIZE - 1) / Disk.BLOCK_SIZE;
+        int count = 0;
+        for(int i = 0; i < 10; i++) {
+            if(i < size && I.pointer[i] > 0) {
+                freeBlock(I.pointer[i]);
+                count++;
+            }
+        }
+        count += freeIndirect(I.pointer[10], 1);
+        count += freeIndirect(I.pointer[11], 2);
+        count += freeIndirect(I.pointer[12], 3);
+        I.flags = 0;
+        return writeInode(iNumber, I);
+    }
     // Write inode 
     private int writeInode(int iNum, Inode inode) {
         if(iNum <= 0) {
