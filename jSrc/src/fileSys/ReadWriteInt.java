@@ -2,7 +2,7 @@ package fileSys;
 
 import java.io.RandomAccessFile;
 
-public class RWInt {
+public class ReadWriteInt {
     public static void main(String[] args) {
         try {
             try(RandomAccessFile raf = new RandomAccessFile("PATH_TO_FILE_YOU_WANT_CREATED", "rw")) {

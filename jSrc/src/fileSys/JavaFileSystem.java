@@ -64,6 +64,17 @@ public class JavaFileSystem {
         freeList = b;
         return 0;
     }
+    // Shutdown
+    public int shutdown() {
+        for(int i = 0; i < FileTable.MAX_FILES; i++) {
+            close(i);
+        }
+        if((freeList != null) && (superBlock.freeList > 0)) {
+            disk.write(superBlock.freeList, freeList);
+        }
+        disk.write(superBlock.freeList, superBlock);
+        return 0;
+    }
     // Create
     public int create() {
         // Allocate a file descriptor
@@ -86,28 +97,6 @@ public class JavaFileSystem {
             return -1;
         }
         return open(ind, inode);
-    }
-    // Close 
-    public int close(int fd) {
-        // Get file table number
-        int iNum = fileTable.getInumb(fd);
-        // Get file table inode
-        Inode inode = fileTable.getInode(fd);
-        // Free-up file descriptor
-        fileTable.free(fd);
-        // Update inode
-        return writeInode(iNum, inode);
-    }
-    // Shutdown
-    public int shutdown() {
-        for(int i = 0; i < FileTable.MAX_FILES; i++) {
-            close(i);
-        }
-        if((freeList != null) && (superBlock.freeList > 0)) {
-            disk.write(superBlock.freeList, freeList);
-        }
-        disk.write(superBlock.freeList, superBlock);
-        return 0;
     }
     // Write to file
     public int write(int fd, byte buffer[]) {
@@ -184,6 +173,17 @@ public class JavaFileSystem {
         }
         return bp;
     }
+    // Close 
+    public int close(int fd) {
+        // Get file table number
+        int iNum = fileTable.getInumb(fd);
+        // Get file table inode
+        Inode inode = fileTable.getInode(fd);
+        // Free-up file descriptor
+        fileTable.free(fd);
+        // Update inode
+        return writeInode(iNum, inode);
+    }
     // Write inode 
     private int writeInode(int iNum, Inode inode) {
         if(iNum <= 0) {
@@ -199,6 +199,28 @@ public class JavaFileSystem {
         ib.node[(iNum - 1)%8] = inode;
         disk.write(block, ib);
         return 0;
+    }
+    // Open
+    private int open(int iNum, Inode inode) {
+        if(inode.flags == 0) {
+            // Not found
+            return -1;
+        } else if(fileTable.getFDInumb(iNum) >= 0) {
+            // Already open
+            return -1;
+        }
+        // Allocate a file descriptor
+        int fd = fileTable.allocate();
+        if((fd < 0) || (fd >= FileTable.MAX_FILES)) {
+            return -1;
+        }
+        int status = fileTable.add(inode, iNum, fd);
+        if(status < 0) {
+            // Error
+            fileTable.free(fd);
+            return -1;
+        }
+        return fd;
     }
     // Find and allocate the first free inode
     private int allocInode(Inode inode) {
@@ -402,28 +424,6 @@ public class JavaFileSystem {
         InodeBlock ib = new InodeBlock();
         disk.read(block, ib);
         return ib.node[(inum - 1)%8];
-    }
-    // Open
-    private int open(int iNum, Inode inode) {
-        if(inode.flags == 0) {
-            // Not found
-            return -1;
-        } else if(fileTable.getFDInumb(iNum) >= 0) {
-            // Already open
-            return -1;
-        }
-        // Allocate a file descriptor
-        int fd = fileTable.allocate();
-        if((fd < 0) || (fd >= FileTable.MAX_FILES)) {
-            return -1;
-        }
-        int status = fileTable.add(inode, iNum, fd);
-        if(status < 0) {
-            // Error
-            fileTable.free(fd);
-            return -1;
-        }
-        return fd;
     }
     // Free-up block
     private int freeBlock(int block) {
