@@ -221,6 +221,27 @@ public class JavaFileSystem {
         }
         return bp;
     }
+    // Seek
+    public int seek(int fd, int offset, int whence) {
+        int p;
+        int oldSeek = fileTable.getSptr(fd);
+        int fileSize = fileTable.getInode(fd).fileSize;
+        switch(whence) {
+            case 0: p = offset; break;
+            case 1: p = oldSeek + offset; break;
+            case 2: p = fileSize + offset; break;
+            // Invalid
+            default: return -1;
+        }
+        // Error
+        if(p < 0) { 
+            return -1; 
+        }//
+        if(fileTable.setSptr(fd, p) < 0) { 
+            return -1; 
+        }
+        return p;
+    }
     // Close 
     public int close(int fd) {
         // Get file table number
