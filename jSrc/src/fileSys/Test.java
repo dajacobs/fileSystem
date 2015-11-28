@@ -29,15 +29,21 @@ public class Test {
                 String cmd = cmds.nextToken();
                 int result = 0;
                 if(cmd.equalsIgnoreCase("format")) { 
-                    int arg1 = Integer.parseInt(cmds.nextToken());
-                    int arg2 = Integer.parseInt(cmds.nextToken());
-                    result = fs.formatDisk(arg1, arg2);
+                    //int arg1 = Integer.parseInt(cmds.nextToken());
+                    //int arg2 = Integer.parseInt(cmds.nextToken());
+                    //result = fs.formatDisk(arg1, arg2);
+                    result = fs.formatDisk(499, 998);
                 } else if(cmd.equalsIgnoreCase("shutdown")) {
                     result = fs.shutdown();
                 } else if(cmd.equalsIgnoreCase("create")) {
                     result = fs.create();
+                    System.out.println(result);
                 } else if(cmd.equalsIgnoreCase("close")) {
                     result = fs.close(Integer.parseInt(cmds.nextToken()));
+                } else if(cmd.equalsIgnoreCase("write")) {
+                    int arg1 = Integer.parseInt(cmds.nextToken());
+                    String arg2 = cmds.nextToken();
+                    result = writeTest(arg1, arg2);
                 } else if(cmd.equalsIgnoreCase("quit")) {
                     System.exit(0);
                 } else if(cmd.equalsIgnoreCase("help")) {
@@ -45,6 +51,7 @@ public class Test {
                 } else {
                     System.out.println("Command Unknown");
                 }
+                System.out.println("     result is " +result);
             } catch(NumberFormatException | NoSuchElementException | IOException e) {
                 
             }
