@@ -111,6 +111,22 @@ public class JavaFileSystem {
         int offset = sp % Disk.BLOCK_SIZE;
         int bp = 0;
         byte readBytes[] = new byte[Disk.BLOCK_SIZE];
+        while(bp < buffer.length && sp < I.fileSize) {
+            int disk_block = getBlock(I, block);
+            // Error
+            if(disk_block < 0) { 
+                return bp; 
+            }
+            // Number of bytes to read
+            int readSize = buffer.length - bp;
+            if((offset + readSize) > Disk.BLOCK_SIZE) { 
+                readSize = Disk.BLOCK_SIZE - offset; 
+            }
+            if((sp + readSize) > I.fileSize) { 
+                readSize = I.fileSize - sp; 
+            }
+        }
+        return bp;
     }
     // Write to file
     public int write(int fd, byte buffer[]) {
