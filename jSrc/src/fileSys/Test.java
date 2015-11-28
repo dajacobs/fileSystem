@@ -57,6 +57,14 @@ public class Test {
             }
         }
     }
+    // Test write to file descriptor
+    private static int writeTest(int fd, String str) {
+        byte buffer[] = new byte[str.length()];
+        for(int i = 0; i < buffer.length; i++) {
+            buffer[i] = (byte)str.charAt(i % str.length());
+        }
+        return fs.write(fd, buffer);
+    }
     // Help list
     private static void help() {
         System.out.println("\tformat size iSize");
